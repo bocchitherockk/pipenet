@@ -33,6 +33,16 @@ TEST_EXECUTABLE := $(basename $(TEST_SOURCE))
 
 tests: compile $(TEST_EXECUTABLE)
 
+# gui
+RAYLIB_INCLUDE = ./gui/raylib-5.5_linux_amd64/include
+RAYLIB_LIB = ./gui/raylib-5.5_linux_amd64/lib
+GUI_SOURCE = ./gui/gui.c
+GUI_EXECUTABLE = ./gui/gui
+$(GUI_EXECUTABLE): compile $(GUI_SOURCE)
+	$(CC) $(CFLAGS) -I$(RAYLIB_INCLUDE) -o $(GUI_EXECUTABLE) $(GUI_SOURCE) -L$(RAYLIB_LIB) -l:libraylib.a -lm
+
+gui: $(GUI_EXECUTABLE)
+
 clean:
 	rm -f $(SERVER_EXECUTABLE)
 	rm -f $(CLIENT_EXECUTABLE)
