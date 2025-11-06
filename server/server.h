@@ -9,6 +9,6 @@ void Server_init();
 void Server_destroy();
 Question Server_read_question();
 Answer Server_generate_answer(Question question);
-void Server_write_answer(Answer answer);
+void Server_write_answer(Answer answer, int client_pid);
 
 #endif // SERVER_H

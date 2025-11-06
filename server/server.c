@@ -113,7 +113,8 @@ Answer Server_generate_answer(Question question) {
     };
 }
 
-void Server_write_answer(Answer answer) {
+ // the client_pid is just used to send the SIGUSR1 to it, i did this to eliminate the problem of gui step debugging process
+void Server_write_answer(Answer answer, int client_pid) {
     if (write(fifo_answer_fd, &answer.server_pid, sizeof(answer.server_pid)) == -1) {
         perror("Server_write_answer : write");
         exit(1);
@@ -126,4 +127,7 @@ void Server_write_answer(Answer answer) {
         perror("Server_write_answer : write");
         exit(1);
     }
+
+    kill(client_pid, SIGUSR1);
+    pause();
 }

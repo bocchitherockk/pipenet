@@ -16,7 +16,6 @@ int main(void) {
         question.question
     );
     Client_write_question(question);
-    pause();
     Answer answer = Client_read_answer();
     printf(
         "client %d: read answer: {server_pid = %d, count = %zu, data = ",
@@ -28,9 +27,8 @@ int main(void) {
         printf("%d ", answer.data[i]);
     }
     printf("}\n");
-    kill(answer.server_pid, SIGUSR1);
-    Answer_destroy(&answer);
 
+    Answer_destroy(&answer);
     Client_destroy();
    return 0;
 }

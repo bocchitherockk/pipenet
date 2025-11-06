@@ -59,6 +59,7 @@ void Client_write_question(Question question) {
         perror("Client_write_question : write");
         exit(1);
     }
+    pause();
 }
 
 Answer Client_read_answer() {
@@ -87,6 +88,7 @@ Answer Client_read_answer() {
         exit(1);
     }
 
+    kill(server_pid, SIGUSR1);
     return (Answer){
         .server_pid = server_pid,
         .count = count,

@@ -29,10 +29,8 @@ int main(void) {
             printf("%d ", answer.data[i]);
         }
         printf("}\n");
-        Server_write_answer(answer);
-        kill(question.client_pid, SIGUSR1);
+        Server_write_answer(answer, question.client_pid);
         Answer_destroy(&answer);
-        pause();
     }
 
     Server_destroy();
