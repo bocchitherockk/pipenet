@@ -1,8 +1,8 @@
 #ifndef PROCESS_H
 #define PROCESS_H
 
-#include <stdio.h>
-#include <pthread.h>
+#include <stdio.h> // FILE
+#include <stdbool.h> // bool
 
 typedef enum Process_Type {
     PROCESS_TYPE_SERVER = 1,

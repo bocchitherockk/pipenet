@@ -1,10 +1,9 @@
 #include <stdio.h> // perror
 #include <stdlib.h> // exit, malloc
-#include <string.h> // memcpy
-#include <unistd.h> // write, read, getpid
-#include <signal.h> // SIGUSR1, signal
-#include <fcntl.h> // O_RDONLY, O_WRONLY
-#include <errno.h> // errno
+#include <unistd.h> // write, read, getpid, pause, close, access
+#include <signal.h> // SIGUSR1, signal, kill
+#include <fcntl.h> // O_RDONLY, O_WRONLY, open
+#include <errno.h> // errno, ENOENT
 #include <time.h>
 
 #include "../shared.h"

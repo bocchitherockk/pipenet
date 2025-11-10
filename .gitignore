@@ -11,6 +11,3 @@ gui/gui
 # fifos
 fifo_question
 fifo_answer
-
-# gui
-gui/raylib/

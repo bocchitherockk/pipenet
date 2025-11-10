@@ -1,9 +1,6 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <stdbool.h>
-#include <unistd.h> // pause
-#include <signal.h> // kill, SIGUSR1
+#include <stdio.h> // printf
 
+#include "../shared.h"
 #include "client.h"
 
 void print_generated_question(Question question) {

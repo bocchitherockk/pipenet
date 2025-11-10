@@ -1,11 +1,11 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <stdbool.h>
-#include <stdarg.h>
-#include <unistd.h>
-#include <errno.h>
-#include <sys/select.h>
+#include <stdio.h> // FILE, SEEK_END, SEEK_SET, ftell, fseek, fopen, fclose, fread, perror
+#include <stdlib.h> // exit, abort
+#include <string.h> // strstr, strlen
+#include <stdbool.h> // bool, true
+#include <stdarg.h> // va_start, va_end
+#include <unistd.h> // read
+#include <errno.h> // errno, EINTR
+#include <sys/select.h> // fd_set, struct timeval, FD_ZERO, FD_SET, FD_ISSET, select
 
 #ifndef MESSAGE_BUFFER_SIZE
 #define MESSAGE_BUFFER_SIZE     1024 * 1024     // 1 MB

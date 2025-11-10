@@ -1,12 +1,11 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <stdbool.h>
-#include <unistd.h>
-#include <pthread.h>
+#include <stdio.h> // sprintf, fclose, perror
+#include <stdlib.h> // free, size_t, exit
+#include <stdbool.h> // true, false
+#include <unistd.h> // STDIN_FILENO, STDOUT_FILENO, STDERR_FILENO, execlp, close, fork, pipe, dup2
+#include <pthread.h> // pthread_t, pthread_create
 
 #include "./Process.h"
-#include "./Process_utils.c"
+// #include "./Process_utils.c"
 #include "./Processes_utils.c"
 
 

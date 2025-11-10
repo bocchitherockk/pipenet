@@ -1,3 +1,6 @@
+#include <stddef.h> // size_t
+#include <stdlib.h> // malloc, free
+#include <string.h> // memcpy
 
 #include "./Process.h"
 
@@ -34,4 +37,3 @@ void Processes_remove_by_pid(Processes *processes, int pid) {
         }
     }
 }
-

@@ -1,8 +1,4 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <unistd.h>
-#include <sys/wait.h>
-#include <pthread.h>
+#include <stddef.h> // size_t
 
 #include <raylib.h>
 #include "./Process.h"

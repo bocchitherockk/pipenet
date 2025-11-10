@@ -1,9 +1,6 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <unistd.h> // close
-#include <fcntl.h> // open
+#include <stdlib.h> // free
 
-#include "shared.h"
+#include "./shared.h"
 
 void Answer_destroy(Answer *answer) {
     if (answer->data != NULL) free(answer->data);

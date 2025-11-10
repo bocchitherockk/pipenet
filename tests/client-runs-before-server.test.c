@@ -1,8 +1,8 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <unistd.h>
-#include <signal.h>
-#include <sys/wait.h>
+#include <stdio.h> // perror
+#include <stdlib.h> // exit
+#include <unistd.h> // fork, execl
+#include <signal.h> // kill, SIGKILL
+#include <sys/wait.h> // waitpid
 
 int main(void) {
     int client = fork();

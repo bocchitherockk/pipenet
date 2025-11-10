@@ -1,16 +1,14 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <unistd.h>
-#include <signal.h>
-#include <sys/wait.h>
+#include <stdio.h> // perror
+#include <stdlib.h> // exit
+#include <unistd.h> // fork, execl
+#include <signal.h> // kill, SIGKILL
+#include <sys/wait.h> // wait
 
 #define MAX_CLIENTS 10
 int current_client = 0;
 
 
 int main(void) {
-    // printf("main: %d\n", getpid());
-
     int server = fork();
     if (server == -1) {
         perror("fork");
@@ -21,10 +19,9 @@ int main(void) {
             exit(1);
         }
     }
-    // printf("server: %d\n", server);
 
     int client;
-    while((client = fork()) != 0 && current_client++ < MAX_CLIENTS); //printf("client: %d\n", client);
+    while((client = fork()) != 0 && current_client++ < MAX_CLIENTS);
     if (client == -1) {
         perror("fork");
         exit(1);

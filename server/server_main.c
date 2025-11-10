@@ -1,9 +1,8 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <stdbool.h>
-#include <signal.h> // kill, SIGUSR1
-#include <unistd.h> // pause
+#include <stdio.h> // printf
+#include <stdbool.h> // true
+#include <unistd.h> // getpid
 
+#include "../shared.h"
 #include "server.h"
 
 void print_read_question(int server_pid, Question question) {

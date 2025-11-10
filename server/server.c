@@ -1,11 +1,11 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <unistd.h> // write, read, unlink
-#include <signal.h> // signal, SIGUSR1
+#include <stdio.h> // printf, perror
+#include <stdlib.h> // exit, srand, rand, malloc, qsort
+#include <unistd.h> // write, read, unlink, getpid, pause, close
+#include <signal.h> // signal, kill, _NSIG, SIGUSR1, SIGKILL, SIGSTOP, SIGWINCH
 #include <sys/stat.h> // mkfifo
-#include <fcntl.h> // O_RDONLY, O_WRONLY, O_NONBLOCK
-#include <errno.h> // errno
-#include <time.h>
+#include <fcntl.h> // open, O_RDWR, O_WRONLY
+#include <errno.h> // errno, EEXIST
+#include <time.h> // time
 
 #include "../shared.h"
 #include "./server.h"
