@@ -6,29 +6,37 @@
 
 #include "server.h"
 
+void print_read_question(int server_pid, Question question) {
+    printf("server %d: read question: {client_pid = %d, question = %zu}\n",
+        server_pid,
+        question.client_pid,
+        question.question
+    );
+}
+
+void print_generated_answer(int client_pid, Answer answer) {
+    printf("server %d: answer for client %d: {server_pid = %d, count = %zu, answers: ",
+        answer.server_pid,
+        client_pid,
+        answer.server_pid,
+        answer.count
+    );
+    for (size_t i = 0; i < answer.count; i++) {
+        printf("%d ", answer.data[i]);
+    }
+    printf("}\n");
+}
+
 int main(void) {
+    Question question;
+    Answer answer;
     Server_init();
 
     while (true) {
-        Question question = Server_read_question();
-        printf(
-            "server %d: read question: {client_pid = %d, question = %zu}\n",
-            getpid(),
-            question.client_pid,
-            question.question
-        );
-        Answer answer = Server_generate_answer(question);
-        printf(
-            "server %d: answer for client %d: {server_pid = %d, count = %zu, answers: ",
-            getpid(),
-            question.client_pid,
-            answer.server_pid,
-            answer.count
-        );
-        for (size_t i = 0; i < answer.count; i++) {
-            printf("%d ", answer.data[i]);
-        }
-        printf("}\n");
+        question = Server_read_question();
+        print_read_question(getpid(), question);
+        answer = Server_generate_answer(question);
+        print_generated_answer(question.client_pid, answer);
         Server_write_answer(answer, question.client_pid);
         Answer_destroy(&answer);
     }

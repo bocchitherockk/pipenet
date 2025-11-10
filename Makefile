@@ -1,7 +1,7 @@
 .PHONY: compile clean tests gui
 
 CC = gcc
-CFALGS = -Wall -Wextra -g
+CFLAGS = -Wall -Wextra -g
 
 SHARED_HEADER = ./shared.h
 SHARED_SOURCE = ./shared.c
@@ -18,10 +18,10 @@ CLIENT_EXECUTABLE = ./client/client_main
 compile: $(SERVER_EXECUTABLE) $(CLIENT_EXECUTABLE)
 
 $(SERVER_EXECUTABLE): Makefile $(SHARED_HEADER) $(SHARED_SOURCE) $(SERVER_HEADER) $(SERVER_SOURCE)
-	$(CC) $(CFALGS) -o $(SERVER_EXECUTABLE) $(SHARED_SOURCE) $(SERVER_SOURCE)
+	$(CC) $(CFLAGS) -o $(SERVER_EXECUTABLE) $(SHARED_SOURCE) $(SERVER_SOURCE)
 
 $(CLIENT_EXECUTABLE): Makefile $(SHARED_HEADER) $(SHARED_SOURCE) $(CLIENT_HEADER) $(CLIENT_SOURCE)
-	$(CC) $(CFALGS) -o $(CLIENT_EXECUTABLE) $(SHARED_SOURCE) $(CLIENT_SOURCE)
+	$(CC) $(CFLAGS) -o $(CLIENT_EXECUTABLE) $(SHARED_SOURCE) $(CLIENT_SOURCE)
 
 # tests
 TEST_DIR = ./tests
@@ -36,7 +36,7 @@ tests: compile $(TEST_EXECUTABLE)
 # gui
 RAYLIB_INCLUDE = ./gui/raylib-5.5_linux_amd64/include
 RAYLIB_LIB = ./gui/raylib-5.5_linux_amd64/lib
-GUI_SOURCE = ./gui/gui.c
+GUI_SOURCE = ./gui/gui.c ./gui/Process.c
 GUI_EXECUTABLE = ./gui/gui
 $(GUI_EXECUTABLE): compile $(GUI_SOURCE)
 	$(CC) $(CFLAGS) -I$(RAYLIB_INCLUDE) -o $(GUI_EXECUTABLE) $(GUI_SOURCE) -L$(RAYLIB_LIB) -l:libraylib.a -lm

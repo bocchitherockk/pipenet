@@ -6,20 +6,16 @@
 
 #include "client.h"
 
-int main(void) {
-    Client_init();
-
-    Question question = Client_generate_question();
-    printf(
-        "client %d: asked question %zu\n",
+void print_generated_question(Question question) {
+    printf("client %d: asked question %zu\n",
         question.client_pid,
         question.question
     );
-    Client_write_question(question);
-    Answer answer = Client_read_answer();
-    printf(
-        "client %d: read answer: {server_pid = %d, count = %zu, data = ",
-        question.client_pid,
+}
+
+void print_read_answer(int client_pid, Answer answer) {
+    printf("client %d: read answer: {server_pid = %d, count = %zu, data = ",
+        client_pid,
         answer.server_pid,
         answer.count
     );
@@ -27,6 +23,16 @@ int main(void) {
         printf("%d ", answer.data[i]);
     }
     printf("}\n");
+}
+
+int main(void) {
+    Client_init();
+
+    Question question = Client_generate_question();
+    print_generated_question(question);
+    Client_write_question(question);
+    Answer answer = Client_read_answer();
+    print_read_answer(question.client_pid, answer);
 
     Answer_destroy(&answer);
     Client_destroy();

@@ -68,13 +68,13 @@ void Server_init() {
     _create_fifo(FIFO_QUESTION); // the server will be receiving from fifo_question
     _create_fifo(FIFO_ANSWER); // the server will be sending to fifo_answer
 
+    _override_signals();
+    srand(time(NULL) ^ getpid());
+
     // fifo_question_fd = _open_fifo(FIFO_QUESTION, O_RDONLY);
     fifo_question_fd = _open_fifo(FIFO_QUESTION, O_RDWR); // Open in read-write to make myself as a fake writer to avoid EOF when no clients are connected
     fifo_answer_fd = _open_fifo(FIFO_ANSWER, O_WRONLY);
     // fifo_answer_fd = _open_fifo(FIFO_ANSWER, O_RDWR); // Open in read-write to make myself as a fake reader to avoid SIGPIPE when no clients are connected (in reality this doesn't happen because the server writes only after reading a question from a client)
-
-    _override_signals();
-    srand(time(NULL) ^ getpid());
 }
 
 void Server_destroy() {
@@ -96,6 +96,10 @@ Question Server_read_question() {
     return question;
 }
 
+int _compare_ints(const void *a, const void *b) {
+    return (*(int *)a - *(int *)b);
+}
+
 Answer Server_generate_answer(Question question) {
     int *data = malloc(question.question * sizeof(int));
     if (data == NULL) {
@@ -105,6 +109,8 @@ Answer Server_generate_answer(Question question) {
     for (size_t i = 0; i < question.question; i++) {
         data[i] = rand() % ANSWER_SEED;
     }
+
+    qsort(data, question.question, sizeof(int), _compare_ints);
 
     return (Answer){
         .server_pid = getpid(),
