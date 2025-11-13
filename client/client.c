@@ -47,7 +47,6 @@ void Client_destroy() {
 Question Client_generate_question() {
     return (Question){
         .client_pid = getpid(),
-        // TODO: 5 is just for testing
         // note: we add 1 to avoid zero questions
         .question = (rand() % QUESTIONS_SEED) + 1,
     };

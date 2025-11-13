@@ -21,7 +21,6 @@ void read_entire_file(char *filename, char *result) {
         exit(1);
     }
 
-    // TODO: there is a better approach to reading a file, but this one just works o who cares
     fseek(file, 0, SEEK_END);
     long filesize = ftell(file);
     fseek(file, 0, SEEK_SET);
