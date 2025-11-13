@@ -183,3 +183,17 @@ void Process_next(Process *process) {
         exit(1);
     }
 }
+
+void Process_kill_all() {
+    if (kill(server.pid, SIGKILL) == -1) {
+        perror("kill");
+        exit(1);
+    }
+
+    for (size_t i = 0; i < clients.count; i++) {
+        if (kill(clients.items[i].pid, SIGKILL) == -1) {
+            perror("kill");
+            exit(1);
+        }
+    }
+}

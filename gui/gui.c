@@ -295,6 +295,7 @@ int main(void) {
     UnloadFont(font_times_new_roman);
     UnloadFont(font_iosevka);
     CloseWindow();
+    Process_kill_all();
 
     return 0;
 }

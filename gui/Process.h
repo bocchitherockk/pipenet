@@ -46,5 +46,6 @@ extern Processes clients;
 
 void Process_create(Process_Type process_type);
 void Process_next(Process *process);
+void Process_kill_all();
 
 #endif // PROCESS_H
