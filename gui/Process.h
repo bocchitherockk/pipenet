@@ -31,6 +31,7 @@ typedef struct Process {
     char line_content[1024];
     char question[100];
     char answer[100];
+    char *answer_data; // heap
 } Process;
 
 

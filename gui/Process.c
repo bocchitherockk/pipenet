@@ -1,21 +1,16 @@
 #include <stdio.h> // sprintf, fclose, perror
 #include <stdlib.h> // free, size_t, exit
 #include <stdbool.h> // true, false
+#include <string.h> // strlen
 #include <unistd.h> // STDIN_FILENO, STDOUT_FILENO, STDERR_FILENO, execlp, close, fork, pipe, dup2
 #include <pthread.h> // pthread_t, pthread_create
+#include <signal.h> // kill, SIGKILL
 
 #include "./Process.h"
-// #include "./Process_utils.c"
+#include "./Process_utils.c"
 #include "./Processes_utils.c"
 
 
-#ifndef MESSAGE_BUFFER_SIZE
-#define MESSAGE_BUFFER_SIZE     1024 * 1024     // 1 MB
-#endif
-
-#ifndef SOURCE_CODE_BUFFER_SIZE
-#define SOURCE_CODE_BUFFER_SIZE 1024 * 1024 * 5 // 5 MB
-#endif
 
 Process server = {0};
 Processes clients = {0};
@@ -72,12 +67,12 @@ void *_Process_create_routine(void *Process_Type__process_type) {
         perror("execvp gdb");
         exit(127);
     }
-    
+
     // Parent
     // Close unused ends
     close(new_process_reference->write_pipe[0]);
     close(new_process_reference->read_pipe[1]);
-    
+
     // Wrap the writable end with FILE* for easy fprintf
     new_process_reference->to_gdb = fdopen(new_process_reference->write_pipe[1], "w");
     if (!new_process_reference->to_gdb) {
@@ -86,11 +81,12 @@ void *_Process_create_routine(void *Process_Type__process_type) {
         close(new_process_reference->read_pipe[0]);
         exit(1);
     }
-    
+
     char *executable = process_type == PROCESS_TYPE_SERVER ? "./server/server_main" : "./client/client_main";
     new_process_reference->pid = gdb_process;
-    new_process_reference->message = calloc(MESSAGE_BUFFER_SIZE, sizeof(char));
+    new_process_reference->message     = calloc(MESSAGE_BUFFER_SIZE, sizeof(char));
     new_process_reference->source_code = calloc(SOURCE_CODE_BUFFER_SIZE, sizeof(char));
+    new_process_reference->answer_data = calloc(ANSWER_DATA_BUFFER_SIZE, sizeof(char));
     sprintf(new_process_reference->source_file, "%s.c", executable);
     read_entire_file(new_process_reference->source_file, new_process_reference->source_code);
 
@@ -157,6 +153,14 @@ void *_Process_next_routine(void *Process_ptr__process) {
     read_message(process->read_pipe, process->message);
     extract_property_from_message(process->message, "value=\"", process->answer);
 
+    Answer answer = parse_answer(process->answer);
+    if (answer.data != NULL) {
+        send_commandf(process->to_gdb, "-data-evaluate-expression (*answer.data)@%d", answer.count); // this will be displayed in the gui
+        read_message(process->read_pipe, process->message);
+        extract_property_from_message(process->message, "value=\"", process->answer_data);
+        process->answer_data[0] = '[';
+        process->answer_data[strlen(process->answer_data) - 1] = ']';
+    }
 
     process->process_state = PROCESS_STATE_STOPPED;
     return NULL;

@@ -26,9 +26,10 @@ void print_generated_answer(int client_pid, Answer answer) {
     printf("}\n");
 }
 
+Question question = {0};
+Answer answer = {0};
+
 int main(void) {
-    Question question;
-    Answer answer;
     Server_init();
 
     while (true) {

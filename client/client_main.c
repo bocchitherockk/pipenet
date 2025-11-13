@@ -22,13 +22,16 @@ void print_read_answer(int client_pid, Answer answer) {
     printf("}\n");
 }
 
+Question question = {0};
+Answer answer = {0};
+
 int main(void) {
     Client_init();
 
-    Question question = Client_generate_question();
+    question = Client_generate_question();
     print_generated_question(question);
     Client_write_question(question);
-    Answer answer = Client_read_answer();
+    answer = Client_read_answer();
     print_read_answer(question.client_pid, answer);
 
     Answer_destroy(&answer);

@@ -7,13 +7,11 @@
 #include <errno.h> // errno, EINTR
 #include <sys/select.h> // fd_set, struct timeval, FD_ZERO, FD_SET, FD_ISSET, select
 
-#ifndef MESSAGE_BUFFER_SIZE
-#define MESSAGE_BUFFER_SIZE     1024 * 1024     // 1 MB
-#endif
+#include "../shared.h"
 
-#ifndef SOURCE_CODE_BUFFER_SIZE
+#define MESSAGE_BUFFER_SIZE     1024 * 1024     // 1 MB
 #define SOURCE_CODE_BUFFER_SIZE 1024 * 1024 * 5 // 5 MB
-#endif
+#define ANSWER_DATA_BUFFER_SIZE 1024 * 1024     // 1 MB
 
 
 void read_entire_file(char *filename, char *result) {
@@ -42,10 +40,40 @@ void extract_property_from_message(char *message, char *property_pattern, char *
     while (c != pos2) result[i++] = *c++;
 }
 
+// advances the pointer
+// this is destructive, so in ccase it fails, i will abort the program
+bool read_string(char **source, char *string) {
+    while (**source != '\0' && *string != '\0' && **source == *string) {
+        (*source)++;
+        string++;
+    }
+
+    if (**source == '\0' && *string == '\0') return true;
+    if (**source == '\0') return false;
+    if (*string == '\0') return true;
+    return false;
+}
+
+Answer parse_answer(char *answer) { // in the format '{server_pid = 0, count = 0, data = 0x0}'
+    read_string(&answer, "{server_pid = ");
+    int server_pid = strtol(answer, &answer, 10);
+    read_string(&answer, ", count = ");
+    size_t count = strtol(answer, &answer, 10);
+    read_string(&answer, ", data = ");
+    void *data = (void *)strtol(answer, &answer, 16);
+    read_string(&answer, "}");
+
+    return (Answer){
+        .server_pid = server_pid,
+        .count = count,
+        .data = data,
+    };
+}
+
 void get_line_content(char *file_content, int line_number, char *result) {
     int current_character = 0;
     int current_line = 1;
-    
+
     // skip until the desired line
     while (current_line < line_number) {
         if (file_content[current_character]   == '\0') abort();
@@ -103,13 +131,13 @@ void read_message(int read_pipe[], char *message) {
     struct timeval tv;
     tv.tv_sec = TIMEOUT_MS / 1000;
     tv.tv_usec = (TIMEOUT_MS % 1000) * 1000;
-    
+
     // We'll repeatedly select+read until select times out
     while (true) {
         FD_ZERO(&rfds);
         FD_SET(read_pipe[0], &rfds);
         struct timeval tv_local = tv;
-        
+
         int rv = select(read_pipe[0]+1, &rfds, NULL, NULL, &tv_local);
         if (rv == -1) {
             if (errno == EINTR) continue;
@@ -119,7 +147,7 @@ void read_message(int read_pipe[], char *message) {
             // timeout, no more data
             break;
         }
-        
+
         if (FD_ISSET(read_pipe[0], &rfds)) {
             size_t n = read(read_pipe[0], message + total_read, MESSAGE_BUFFER_SIZE - 1);
             if (n > 0) {
