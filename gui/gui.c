@@ -1,6 +1,7 @@
 #include <stddef.h>
 #include <string.h>
 #include <raylib.h>
+#include <raymath.h>
 
 #include "./Process.h"
 
@@ -225,6 +226,9 @@ void DrawServerPanel() {
     DrawProcessCard(panel, &server, "SERVER PROCESS");
 }
 
+int clients_scroll = 0;
+#define CLIENTS_SCROLL_SPEED 45
+
 // Draw clients panel with scrolling
 void DrawClientsPanel() {
     float panel_width = (SCREEN_WIDTH - SIDEBAR_WIDTH) / 2 - PANEL_PADDING * 1.5f;
@@ -251,13 +255,30 @@ void DrawClientsPanel() {
         return;
     }
 
+    Rectangle scrollable_panel = {
+        .x = panel_x,
+        .y = HEADER_HEIGHT + PANEL_PADDING,
+        .width = panel_width,
+        .height = SCREEN_HEIGHT - HEADER_HEIGHT - PANEL_PADDING,
+    };
+
+    Vector2 mouse_position = GetMousePosition();
+    if (CheckCollisionPointRec(mouse_position, scrollable_panel)) {
+        clients_scroll = Clamp(
+            clients_scroll + GetMouseWheelMove() * CLIENTS_SCROLL_SPEED,
+            -((float)clients.count * (PROCESS_HEIGHT + PANEL_PADDING)) + (SCREEN_HEIGHT - HEADER_HEIGHT),
+            0
+        );
+    }
+    BeginScissorMode(scrollable_panel.x, scrollable_panel.y, scrollable_panel.width, scrollable_panel.height);
+
     // Draw each client
     for (size_t i = 0; i < clients.count; i++) {
         float y_pos = HEADER_HEIGHT + PANEL_PADDING + i * (PROCESS_HEIGHT + PROCESS_SPACING);
 
         Rectangle panel = {
             panel_x,
-            y_pos,
+            y_pos + clients_scroll,
             panel_width,
             PROCESS_HEIGHT
         };
@@ -266,6 +287,8 @@ void DrawClientsPanel() {
         sprintf(label, "CLIENT #%zu", i + 1);
         DrawProcessCard(panel, &clients.items[i], label);
     }
+
+    EndScissorMode();
 }
 
 int main(void) {
